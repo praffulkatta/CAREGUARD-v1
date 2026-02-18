@@ -3,7 +3,7 @@ import { PORT } from "./config/env";
 import pool from "./config/db"
 import express from "express"
 import cors from "cors"
-import health from "./routes/health.routes"
+
 
 
 // Middlewares
@@ -15,6 +15,8 @@ app.get("/h", async (req, res) => {
     const result = await pool.query("SELECT current_database()");
     res.send(`The database name is: ${result.rows[0].current_database}`);
 });
+
+
 
 
 
