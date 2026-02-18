@@ -1,164 +1,223 @@
-CAREGUARD Backend — AI Symptom Analysis Pipeline
+# 🩺 CAREGUARD Backend
 
-A modular healthcare backend built with Express + TypeScript + PostgreSQL, designed to perform symptom analysis, risk detection, diagnosis ranking, and intelligent insights generation.
+**AI-Powered Symptom Analysis Pipeline**
 
-This project follows a layered AI architecture inspired by real clinical decision-support systems.
+A modular healthcare backend built with **Express + TypeScript + PostgreSQL**, designed to perform symptom analysis, risk detection, diagnosis ranking, and intelligent insight generation.
 
-🧠 System Pipeline
+This system follows a **layered AI architecture**, inspired by clinical decision-support workflows used in modern healthcare platforms.
 
-The backend processes health assessments using multiple intelligence layers:
+---
 
-<img width="1727" height="542" alt="diagram-export-2-18-2026-3_07_36-PM" src="https://github.com/user-attachments/assets/fd8f80ed-3ff4-46b2-a11d-80ab099bf726" />
+## 🧠 System Pipeline
+
+The backend processes health assessments through multiple intelligence layers working together:
+
+```
+Symptom Collection
+        ↓
+Medical Knowledge Engine
+        ↓
+Risk Analysis Engine
+        ↓
+Critical Rule Engine (Safety Layer)
+        ↓
+Diagnosis Ranking Engine
+        ↓
+LLM Reasoning Layer
+        ↓
+Insights & Alerts
+```
 
 
-🧩 Architecture Overview
-1️⃣ Symptom Collection Layer
+<img width="1727" height="542" alt="diagram-export-2-18-2026-3_07_36-PM" src="https://github.com/user-attachments/assets/a7c70f62-3ae0-4df1-969d-edc5f7ee2dea" />
 
-Collects symptoms associated with a session.
+---
 
-Service:
-src/services/symptomCollector.service.ts
+## 🧩 Architecture Overview
 
-Responsibilities:
+### 1️⃣ Symptom Collection Layer
 
-Fetch symptom data
+Collects and normalizes symptoms associated with a patient session.
 
-Normalize symptom format
+**Service:**
+`src/services/symptomCollector.service.ts`
 
-Prepare input for analysis
+**Responsibilities**
 
-2️⃣ Medical Knowledge Engine
+* Fetch symptom data
+* Normalize formats
+* Prepare structured input for analysis
 
-Matches symptoms to known medical conditions.
+---
 
-Service:
-src/services/medicalKnowledge.service.ts
+### 2️⃣ Medical Knowledge Engine
 
-Responsibilities:
+Matches symptoms against known medical conditions.
 
-Symptom-condition mapping
+**Service:**
+`src/services/medicalKnowledge.service.ts`
 
-Medical rule matching
+**Responsibilities**
 
-Knowledge-based scoring
+* Symptom ↔ condition mapping
+* Medical rule matching
+* Knowledge-based scoring
 
-3️⃣ Risk Analysis Engine
+---
 
-Calculates overall risk level.
+### 3️⃣ Risk Analysis Engine
 
-Service:
-src/services/riskAnalysis.service.ts
+Calculates overall risk level based on symptom severity and patterns.
 
-Responsibilities:
+**Service:**
+`src/services/riskAnalysis.service.ts`
 
-Risk scoring
+**Responsibilities**
 
-Triggered safety rules
+* Risk scoring
+* Triggered safety rules
+* Severity estimation
 
-Severity estimation
+**Example Rules**
 
-Example rules:
+* Chest pain → risk increase
+* Breathing difficulty → high alert
 
-Chest pain → risk increase
+---
 
-Breathing difficulty → high alert
+### 4️⃣ Critical Rule Engine (Safety Layer)
 
-4️⃣ Critical Rule Engine (Safety Layer)
+Overrides normal logic when dangerous symptom combinations are detected.
 
-Overrides normal logic for dangerous symptom combinations.
+**Service:**
+`src/services/criticalRuleEngine.service.ts`
 
-Service:
-src/services/criticalRuleEngine.service.ts
+**Example**
 
-Example:
-
+```
 Chest pain + sweating
 → CRITICAL risk
-→ emergency alert
+→ Emergency alert
+```
 
+This layer ensures patient safety by prioritizing emergency conditions.
 
-This ensures patient safety by prioritizing emergency conditions.
+---
 
-5️⃣ Diagnosis Ranking Engine
+### 5️⃣ Diagnosis Ranking Engine
 
-Ranks possible conditions based on probabilities.
+Ranks possible conditions based on probability scores.
 
-Service:
-src/services/diagnosisRanking.service.ts
+**Service:**
+`src/services/diagnosisRanking.service.ts`
 
-Output:
+**Output**
 
-Differential diagnosis list
+* Differential diagnosis list
+* Probability ranking
 
-Probability scores
+---
 
-6️⃣ LLM Reasoning Layer
+### 6️⃣ LLM Reasoning Layer
 
-Generates human-readable insights.
+Transforms analysis into human-readable explanations.
 
-Service:
-src/services/llmReasoning.service.ts
+**Service:**
+`src/services/llmReasoning.service.ts`
 
-Responsibilities:
+**Responsibilities**
 
-Explain reasoning
+* Explain reasoning
+* Provide next steps
+* Generate summary insights
 
-Provide next actions
+---
 
-Summarize findings
+### 7️⃣ Assessment Pipeline (Core Orchestrator)
 
-7️⃣ Assessment Pipeline (Core Orchestrator)
+Central engine that connects all layers.
 
-Service:
-src/services/assessmentPipeline.service.ts
+**Service:**
+`src/services/assessmentPipeline.service.ts`
 
-This orchestrates all layers:
+**Pipeline Flow**
 
+```
 collectSymptoms()
    → matchMedicalKnowledge()
    → analyzeRisk()
    → checkCriticalRules()
    → rankDiagnosis()
    → generateInsights()
+```
 
-🚀 API Endpoints
+---
 
-Base URL:
+## 🚀 API Endpoints
 
+**Base URL**
+
+```
 http://localhost:5001/api
+```
 
-👤 Patient APIs
-Method	Endpoint	Description
-POST	/patients	Create patient
-GET	/patients/:id	Get patient
-GET	/patients/:id/history	Patient timeline
-Example Request
+---
+
+### 👤 Patient APIs
+
+| Method | Endpoint              | Description         |
+| ------ | --------------------- | ------------------- |
+| POST   | /patients             | Create patient      |
+| GET    | /patients/:id         | Get patient details |
+| GET    | /patients/:id/history | Patient timeline    |
+
+**Example**
+
+```json
 POST /api/patients
 {
   "name": "Rahul",
   "age": 28,
   "gender": "male"
 }
+```
 
-🤒 Symptom APIs
-Method	Endpoint	Description
-POST	/symptoms/session/start	Start symptom session
-POST	/symptoms/session/:sessionId/add	Add symptom
-GET	/symptoms/session/:sessionId	Get session symptoms
-Example
+---
+
+### 🤒 Symptom APIs
+
+| Method | Endpoint                         | Description           |
+| ------ | -------------------------------- | --------------------- |
+| POST   | /symptoms/session/start          | Start symptom session |
+| POST   | /symptoms/session/:sessionId/add | Add symptom           |
+| GET    | /symptoms/session/:sessionId     | Get session symptoms  |
+
+**Example**
+
+```json
 POST /api/symptoms/session/session-001/add
 {
   "symptom": "chest pain",
   "duration": "2 hours",
   "severity": 8
 }
+```
 
-🧠 Assessment APIs (Main AI Pipeline)
-Method	Endpoint	Description
-POST	/assessment/run/:sessionId	Run full assessment
-GET	/assessment/:sessionId/result	Get result
-POST	/assessment/rerun/:sessionId	Re-run analysis
-🩺 Example Assessment Output
+---
+
+### 🧠 Assessment APIs (Main AI Pipeline)
+
+| Method | Endpoint                      | Description           |
+| ------ | ----------------------------- | --------------------- |
+| POST   | /assessment/run/:sessionId    | Run full assessment   |
+| GET    | /assessment/:sessionId/result | Get assessment result |
+| POST   | /assessment/rerun/:sessionId  | Re-run analysis       |
+
+---
+
+## 🩺 Example Assessment Output
+
+```json
 {
   "sessionId": "session-001",
   "symptoms": [
@@ -183,22 +242,25 @@ POST	/assessment/rerun/:sessionId	Re-run analysis
     "nextAction": "Seek urgent medical attention."
   }
 }
+```
 
-⚙️ Middleware
+---
 
-Implemented middleware:
+## ⚙️ Middleware
 
-Request logger
+Implemented middleware includes:
 
-Error handler
+* Request logger
+* Async handler
+* Validation middleware
+* Error handler
+* 404 handler
 
-404 handler
+---
 
-Async handler
+## 🏗️ Project Structure
 
-Validation middleware
-
-🏗️ Project Structure
+```
 src/
 ├── routes/
 ├── controllers/
@@ -206,43 +268,43 @@ src/
 ├── models/
 ├── middleware/
 └── app.ts
+```
 
-🧪 Testing Flow
+---
 
-Create patient
+## 🧪 Typical Testing Flow
 
-Start symptom session
+1. Create patient
+2. Start symptom session
+3. Add symptoms
+4. Run assessment pipeline
+5. Receive risk score, diagnosis, and insights
 
-Add symptoms
+---
 
-Run assessment pipeline
+## 🔥 Current Status
 
-Receive risk + diagnosis + insights
+* ✔ Layered assessment pipeline
+* ✔ Risk analysis engine
+* ✔ Critical safety overrides
+* ✔ Diagnosis ranking
+* ✔ Insight generation
+* ✔ Modular service architecture
 
-🔥 Current Status
+---
 
-✔ Layered assessment pipeline
-✔ Risk analysis engine
-✔ Critical rule overrides
-✔ Diagnosis ranking
-✔ Insight generation
-✔ Modular service architecture
+## 🔮 Planned Next Steps
 
-🔮 Planned Next Steps
+* Persist assessments to PostgreSQL timeline
+* Alert storage & notification system
+* ML-based risk prediction
+* Real LLM integration
+* Doctor escalation workflow
+* Voice AI symptom intake
 
-Persist assessments to PostgreSQL timeline
+---
 
-Alert storage system
-
-ML-based risk prediction
-
-Real LLM integration
-
-Doctor escalation workflow
-
-Voice AI symptom intake
-
-⚠️ Disclaimer
+## ⚠️ Disclaimer
 
 This system is an experimental AI decision-support prototype.
-It is not intended for real medical diagnosis or emergency decisions.
+It is **not** intended for real medical diagnosis or emergency decision-making.
