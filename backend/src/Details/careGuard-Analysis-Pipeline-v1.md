@@ -8,21 +8,8 @@ This project follows a layered AI architecture inspired by real clinical decisio
 
 The backend processes health assessments using multiple intelligence layers:
 
-User Symptoms
-      ↓
-Symptom Collection Layer
-      ↓
-Medical Knowledge Engine
-      ↓
-Risk Analysis Engine
-      ↓
-Critical Rule Engine (Safety Override)
-      ↓
-Diagnosis Ranking Engine
-      ↓
-LLM Reasoning Layer
-      ↓
-Insights + Alerts + Next Action
+<img width="1727" height="542" alt="diagram-export-2-18-2026-3_07_36-PM" src="https://github.com/user-attachments/assets/fd8f80ed-3ff4-46b2-a11d-80ab099bf726" />
+
 
 🧩 Architecture Overview
 1️⃣ Symptom Collection Layer
