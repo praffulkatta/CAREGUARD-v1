@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+//////////////////////////////////////////////////////
+// PATIENT
+//////////////////////////////////////////////////////
+
+model Patient {
+  id        Int      @id @default(autoincrement())
+  name      String
+  age       Int?
+  gender    String?
+  createdAt DateTime @default(now())
+
+  sessions  SymptomSession[]
+}
+
+//////////////////////////////////////////////////////
+// SYMPTOM SESSION (one illness event)
+//////////////////////////////////////////////////////
+
+model SymptomSession {
+  id        String   @id
+  patientId Int
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+
+  patient     Patient       @relation(fields: [patientId], references: [id])
+  symptoms    Symptom[]
+  assessment  AssessmentResult?
+}
+
+//////////////////////////////////////////////////////
+// SYMPTOMS
+//////////////////////////////////////////////////////
+
+model Symptom {
+  id         Int      @id @default(autoincrement())
+  sessionId  String
+  name       String
+  severity   Int?
+  duration   String?
+  createdAt  DateTime @default(now())
+
+  session SymptomSession @relation(fields: [sessionId], references: [id])
+}
+
+//////////////////////////////////////////////////////
+// FINAL ASSESSMENT RESULT
+//////////////////////////////////////////////////////
+
+model AssessmentResult {
+  id          Int      @id @default(autoincrement())
+  sessionId   String   @unique
+  riskLevel   String
+  riskScore   Float
+  createdAt   DateTime @default(now())
+
+  session     SymptomSession @relation(fields: [sessionId], references: [id])
+
+  diagnoses   Diagnosis[]
+  alerts      Alert[]
+}
+
+//////////////////////////////////////////////////////
+// DIAGNOSIS RANKING
+//////////////////////////////////////////////////////
+
+model Diagnosis {
+  id            Int      @id @default(autoincrement())
+  assessmentId  Int
+  condition     String
+  probability   Float
+
+  assessment AssessmentResult @relation(fields: [assessmentId], references: [id])
+}
+
+//////////////////////////////////////////////////////
+// ALERTS (critical rules)
+//////////////////////////////////////////////////////
+
+model Alert {
+  id            Int      @id @default(autoincrement())
+  assessmentId  Int
+  level         String
+  message       String
+  createdAt     DateTime @default(now())
+
+  assessment AssessmentResult @relation(fields: [assessmentId], references: [id])
+}

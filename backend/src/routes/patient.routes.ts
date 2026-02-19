@@ -10,7 +10,7 @@ router.post("/", patientController.createPatient);
 router.get("/:id", patientController.getPatient);
 
 // Get patient's full health history
-router.get("/:id/history", patientController.getPatientHistory);
+router.get("/:id/history", patientController.getPatientHistoryController);
 
 // Update patient info
 router.put("/:id", patientController.updatePatient);

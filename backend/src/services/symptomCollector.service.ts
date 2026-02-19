@@ -1,15 +1,14 @@
-export interface CollectedSymptom {
-  name: string;
-  severity: number;
-  duration: string;
-}
+import pool from "../db";
 
 export const collectSymptoms = async (sessionId: string) => {
-  // TODO: fetch from DB
-  const symptoms: CollectedSymptom[] = [
-    { name: "chest pain", severity: 8, duration: "2 hours" },
-    { name: "sweating", severity: 6, duration: "1 hour" }
-  ];
+  const result = await pool.query(
+    `
+    SELECT name, severity, duration
+    FROM "Symptom"
+    WHERE "sessionId" = $1
+    `,
+    [sessionId]
+  );
 
-  return symptoms;
+  return result.rows;
 };

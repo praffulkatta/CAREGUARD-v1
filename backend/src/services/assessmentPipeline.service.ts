@@ -4,6 +4,7 @@ import { analyzeRisk } from "./riskAnalysis.service";
 import { rankDiagnosis } from "./diagnosisRanking.service";
 import { generateInsights } from "./llmReasoning.service";
 import { checkCriticalRules } from "./criticalRuleEngine.service";
+import { saveAssessmentResult } from "./saveAssessment.service";
 
 
 export interface AssessmentResult {
@@ -91,6 +92,14 @@ export const runAssessmentPipeline = async (
   // ---------------------------------
   const insights =
     await generateInsights(risk.riskLevel, diagnoses);
+
+
+
+  await saveAssessmentResult(
+  sessionId,
+  risk,
+  diagnoses
+);
 
 
   // ---------------------------------
